@@ -1,22 +1,36 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es"> <!-- Usa "es" si el público es hispanohablante -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"  />
+
+    <title>Temporizador de Tareas - Organiza tu tiempo eficientemente</title>
+    <meta name="description" content="Administra tu tiempo con nuestro temporizador de tareas. Guarda y recupera tareas fácilmente con Local Storage.">
+    <meta name="keywords" content="temporizador, tareas, productividad, organización, local storage, gestión del tiempo">
+    
+    <!-- Open Graph (Para compartir en redes sociales) -->
+    <meta property="og:title" content="Temporizador de Tareas - Organiza tu tiempo eficientemente" />
+    <meta property="og:description" content="Un temporizador de tareas que te ayuda a administrar tu tiempo de manera eficiente." />
+    <meta property="og:image" content="/preview-image.png" /> <!-- Imagen para compartir -->
+    <meta property="og:url" content="https://tudominio.com" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Temporizador de Tareas - Administra tu tiempo" />
+    <meta name="twitter:description" content="Mejora tu productividad con nuestro temporizador de tareas." />
+    <meta name="twitter:image" content="/preview-image.png" />
+
+
+</head>
+<body>
+    <slot />
+</body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+html, body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 </style>
