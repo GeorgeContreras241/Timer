@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "preact/hooks";
+import { useState, useEffect, useRef } from "react";
+import { useInterval } from "react-use";
 
 const Timer = () => {
     const timerRef = useRef(null);
@@ -7,10 +8,8 @@ const Timer = () => {
     const [input, setInput] = useState({ name: "", description: "", days: 0, hours: 0, minutes: 0 });
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
 
-    useEffect(() => {
-        if (!isRunning) return;
-
-        const interval = setInterval(() => {
+    useInterval(
+        () => {
             setTime((prevTime) => {
                 let { seconds, minutes, hours, days } = prevTime;
                 seconds += 1;
@@ -30,10 +29,9 @@ const Timer = () => {
 
                 return { seconds, minutes, hours, days };
             });
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [isRunning]);
+        },
+        isRunning ? 1000 : null // Si isRunning es false, el intervalo se detiene
+    );
 
     const handleNext = (id, days, hours, minutes) => {
         setTime({ seconds: 0, minutes, hours, days });
@@ -72,7 +70,7 @@ const Timer = () => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks, isRunning]);
 
- 
+
 
 
     return (
@@ -90,7 +88,7 @@ const Timer = () => {
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-blue-600">
                     Pausar
                 </button>
-                <button onClick={() => { setIsRunning(false); localStorage.setItem('tasks', JSON.stringify(tasks)); setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 }); }} 
+                <button onClick={() => { setIsRunning(false); localStorage.setItem('tasks', JSON.stringify(tasks)); setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 }); }}
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-red-800 cursor-not-allowed">
                     Reiniciar
                 </button>
