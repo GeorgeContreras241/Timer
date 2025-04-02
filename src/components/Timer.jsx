@@ -69,9 +69,18 @@ const Timer = () => {
     };
 
     useEffect(() => {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks, isRunning]);
-    
+
+    useEffect(() => {
+        const worker = new Worker(new URL("./timerWorker.js", import.meta.url));
+        worker.onmessage = (event) => {
+            setTime(event.data);
+        };
+
+        return () => worker.terminate();
+    }, [])
+
 
     return (
         <div className="flex flex-col">
@@ -88,7 +97,7 @@ const Timer = () => {
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-blue-600">
                     Pausar
                 </button>
-                <button onClick={() => { setIsRunning(false); localStorage.setItem('tasks', JSON.stringify(tasks)); setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 });  }} disabled
+                <button onClick={() => { setIsRunning(false); localStorage.setItem('tasks', JSON.stringify(tasks)); setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 }); }} 
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-red-800 cursor-not-allowed">
                     Reiniciar
                 </button>
@@ -126,7 +135,7 @@ const Timer = () => {
             <section className="max-w-[600px] w-full mx-auto mt-4">
                 <h2 className="text-center text-2xl font-bold">Tareas</h2>
                 <ul className="flex flex-col gap-3 mt-4">
-                    {tasks.map(item => (
+                    {tasks && tasks.length > 0 ? tasks.map(item => (
                         <li key={item.id} className="flex flex-row max-w-[600px] items-center justify-between gap-4 p-2 px-6 rounded-lg">
                             <div>
                                 <p className="text-lg font-bold">{item.name}</p>
@@ -146,7 +155,7 @@ const Timer = () => {
                                 </button>
                             </div>
                         </li>
-                    ))}
+                    )) : <p className=" text-center text-sm text-neutral-400">No tienes tareas</p>}
                 </ul>
             </section>
         </div>
