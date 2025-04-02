@@ -73,7 +73,7 @@ const Timer = () => {
     }, [tasks, isRunning]);
 
     useEffect(() => {
-        const worker = new Worker(new URL("./timerWorker.js", import.meta.url));
+        const worker = new Worker(new URL("./timerWorked.js", import.meta.url));
         worker.onmessage = (event) => {
             setTime(event.data);
         };
