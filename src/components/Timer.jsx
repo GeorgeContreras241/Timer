@@ -1,47 +1,76 @@
+
 import { useState, useEffect, useRef } from "react";
-import { useInterval } from "react-use";
+
 
 const Timer = () => {
-    const timerRef = useRef(null);
+    const timerRef = useRef(Date.now());
+    const timerRef1 = useRef(null);
     const [time, setTime] = useState({ seconds: 0, minutes: 0, hours: 0, days: 0 });
     const [isRunning, setIsRunning] = useState(false);
     const [input, setInput] = useState({ name: "", description: "", days: 0, hours: 0, minutes: 0 });
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
 
-    useInterval(
-        () => {
-            setTime((prevTime) => {
-                let { seconds, minutes, hours, days } = prevTime;
-                seconds += 1;
+    useEffect(() => {
+        if (!isRunning) return;
 
-                if (seconds === 60) {
-                    seconds = 0;
-                    minutes += 1;
-                }
-                if (minutes === 60) {
-                    minutes = 0;
-                    hours += 1;
-                }
-                if (hours === 24) {
-                    hours = 0;
-                    days += 1;
-                }
+        const startTime = localStorage.getItem('timerStart') ? Number(localStorage.getItem('timerStart')) : Date.now();
+        timerRef.current = startTime;
+        localStorage.setItem('timerStart', startTime);
 
-                return { seconds, minutes, hours, days };
-            });
-        },
-        isRunning ? 1000 : null // Si isRunning es false, el intervalo se detiene
-    );
+        const updateTimer = () => {
+            const elapsed = Math.floor((Date.now() - timerRef.current) / 1000);
+            const days = Math.floor(elapsed / 86400);
+            const hours = Math.floor((elapsed % 86400) / 3600);
+            const minutes = Math.floor((elapsed % 3600) / 60);
+            const seconds = elapsed % 60;
+            setTime({ seconds, minutes, hours, days });
+        };
 
-    const handleNext = (id, days, hours, minutes) => {
-        setTime({ seconds: 0, minutes, hours, days });
-        timerRef.current = { id, days, hours, minutes, seconds: 0 };
+        const interval = setInterval(updateTimer, 1000);
+        updateTimer();
+
+        return () => clearInterval(interval);
+    }, [isRunning]);
+
+    const handleStart = () => {
+        if (!isRunning) {
+            timerRef.current = Date.now() - (time.days * 86400000 + time.hours * 3600000 + time.minutes * 60000 + time.seconds * 1000);
+            localStorage.setItem('timerStart', timerRef.current);
+        }
+        setIsRunning(true);
     };
 
+    const handlePause = () => {
+        setIsRunning(false);
+        localStorage.removeItem('timerStart');
+        const newTasks = tasks.map(item => 
+            item.id === timerRef1.current?.id
+                ? { ...item, seconds: time.seconds, minutes: time.minutes, hours: time.hours, days: time.days }
+                : item
+        )
+        setTasks(newTasks);
+
+    };
+    console.log(tasks)
+    const handleReset = () => {
+        setIsRunning(false);
+        setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 });
+        localStorage.removeItem('timerStart');
+    };
     const handleChange = (e) => {
         const { name, value } = e.target;
         setInput((prev) => ({ ...prev, id: Date.now(), [name]: value }));
     };
+    const handleNext = (id, days, hours, minutes) => {
+        setTime({ seconds : 0, minutes, hours, days });
+        timerRef1.current = { id, days, hours, minutes, seconds: 0 };
+    };
+    const handleDelete = (id) => {
+        const newTask = tasks.filter(task => task.id !== id)
+        setTasks(newTask);
+        localStorage.setItem('tasks', JSON.stringify(newTask));
+    };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -49,30 +78,9 @@ const Timer = () => {
         setTasks([...tasks, input]);
         setInput({ name: "", description: "", days: 0, hours: 0, minutes: 0 });
     };
-
-    const handleDelete = (id) => {
-        const newTask = tasks.filter(task => task.id !== id)
-        setTasks(newTask);
-        localStorage.setItem('tasks', JSON.stringify(newTask));
-    };
-
-    const handlePause = () => {
-        setTasks(tasks.map(task =>
-            task.id === timerRef.current?.id
-                ? { ...task, ...time }
-                : task
-        ));
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        setIsRunning(false);
-    };
-
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks, isRunning]);
-
-
-
-
+    }, [tasks]);
     return (
         <div className="flex flex-col">
             <h1 className="text-[1.8rem] text-center font-bold text-red-400">Temporizador de Tareas</h1>
@@ -80,7 +88,7 @@ const Timer = () => {
                 {time.days}d : {time.hours}h : {time.minutes}m : {time.seconds}s
             </span>
             <div className="flex  flex-row flex-wrap justify-center gap-3 mb-4 mt-6">
-                <button onClick={() => setIsRunning(true)}
+                <button onClick={handleStart}
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-green-800">
                     Iniciar
                 </button>
@@ -88,7 +96,7 @@ const Timer = () => {
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-blue-600">
                     Pausar
                 </button>
-                <button onClick={() => { setIsRunning(false); localStorage.setItem('tasks', JSON.stringify(tasks)); setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 }); }}
+                <button onClick={handleReset}
                     className="rounded-lg px-6 py-1 bg-neutral-800 text-neutral-200 transition hover:bg-red-800 cursor-not-allowed">
                     Reiniciar
                 </button>
@@ -140,7 +148,7 @@ const Timer = () => {
                                     className="bg-blue-700 w-22 py-1 rounded hover:bg-blue-800">
                                     Eliminar
                                 </button>
-                                <button onClick={() => handleNext(item.id, item.days, item.hours, item.minutes)}
+                                <button onClick={() => handleNext(item.id, item.days, item.hours, item.minutes, item.seco)}
                                     className="bg-blue-700 w-22 py-1 rounded hover:bg-blue-800">
                                     Utilizar
                                 </button>
