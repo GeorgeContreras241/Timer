@@ -1,36 +1,29 @@
-# Astro Starter Kit: Basics
+# 🔐 1Save Password
 
-```sh
-npm create astro@latest -- --template basics
-```
+**1Save Password** es una aplicación web para guardar y gestionar tus contraseñas de forma segura. Las contraseñas se cifran directamente en el navegador con una clave personal del usuario (que **no se guarda en ningún lado**). Solo tú puedes descifrarlas.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+---
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🛠 Tecnologías
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+- ⚛️ **React 19**
+- 🧠 **Zustand** para manejo de estado global
+- 🎨 **Tailwind CSS** para estilos rápidos y limpios
+- 📦 **React Hook Form** para validación y formularios
+- 🔐 **CryptoJS** + **lz-string** para cifrado y compresión
+- 🔥 **React Hot Toast** para notificaciones
+- 🚀 **Google OAuth** para inicio de sesión
+- 🌍 **React Router DOM v7** para navegación
 
-## 🚀 Project Structure
+---
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🚀 Instalación
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+1. Clona este repositorio:
+```bash
+git clone https://github.com/tu-usuario/1save-password.git
+cd 1save-password
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
 
@@ -43,6 +36,3 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

@@ -9,6 +9,7 @@ const Timer = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [input, setInput] = useState({ name: "", description: "", days: 0, hours: 0, minutes: 0 });
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
+    const tasksRef = useRef(tasks);
 
     useEffect(() => {
         if (!isRunning) return;
@@ -43,7 +44,7 @@ const Timer = () => {
     const handlePause = () => {
         setIsRunning(false);
         localStorage.removeItem('timerStart');
-        const newTasks = tasks.map(item => 
+        const newTasks = tasks.map(item =>
             item.id === timerRef1.current?.id
                 ? { ...item, seconds: time.seconds, minutes: time.minutes, hours: time.hours, days: time.days }
                 : item
@@ -51,7 +52,6 @@ const Timer = () => {
         setTasks(newTasks);
 
     };
-    console.log(tasks)
     const handleReset = () => {
         setIsRunning(false);
         setTime({ seconds: 0, minutes: 0, hours: 0, days: 0 });
@@ -62,7 +62,7 @@ const Timer = () => {
         setInput((prev) => ({ ...prev, id: Date.now(), [name]: value }));
     };
     const handleNext = (id, days, hours, minutes) => {
-        setTime({ seconds : 0, minutes, hours, days });
+        setTime({ seconds: 0, minutes, hours, days });
         timerRef1.current = { id, days, hours, minutes, seconds: 0 };
     };
     const handleDelete = (id) => {
@@ -81,14 +81,30 @@ const Timer = () => {
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
-    useEffect(() => {
-	const interval = setInterval(() => {
-		localStorage.setItem('tasks', JSON.stringify(tasks));
-		console.log('Guardado automático');
-	}, 120000); 
 
-	return () => clearInterval(interval);
-}, [tasks]);
+    /**
+     * 
+     * useEffect(() => {
+        tasksRef.current = tasks;
+    }, [tasks]);
+
+    useEffect(() => {
+        if (!isRunning || !timerRef1.current?.id) return;
+
+        const interval = setInterval(() => {
+            const updatedTasks = tasksRef.current.map(item =>
+                item.id === timerRef1.current.id
+                    ? { ...item, seconds: time.seconds, minutes: time.minutes, hours: time.hours, days: time.days }
+                    : item
+            );
+            setTasks(updatedTasks);
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        }, 120000); // cada 2 minutos
+
+        return () => clearInterval(interval);
+    }, [isRunning, time, tasks]);
+     */
+
 
     return (
         <div className="flex flex-col">
