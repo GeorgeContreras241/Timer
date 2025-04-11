@@ -81,6 +81,15 @@ const Timer = () => {
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
+    useEffect(() => {
+	const interval = setInterval(() => {
+		localStorage.setItem('tasks', JSON.stringify(tasks));
+		console.log('Guardado automático');
+	}, 120000); 
+
+	return () => clearInterval(interval);
+}, [tasks]);
+
     return (
         <div className="flex flex-col">
             <h1 className="text-[1.8rem] text-center font-bold text-red-400">Temporizador de Tareas</h1>
